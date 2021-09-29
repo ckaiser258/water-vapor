@@ -1,11 +1,9 @@
-import { PrismaClient } from "@prisma/client";
 import { NextApiHandler } from "next";
+import getGames from "../../db/games/queries/getGames";
 
-const prisma = new PrismaClient();
-
-const getGames: NextApiHandler = async (req, res) => {
-  const allGames = await prisma.game.findMany();
+const games: NextApiHandler = async (req, res) => {
+  const allGames = await getGames();
   res.json(allGames);
 };
 
-export default getGames;
+export default games;
