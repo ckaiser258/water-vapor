@@ -1,11 +1,24 @@
+scalar Date
+
 type Query {
   info: String!
   feed: [Game!]!
   game(id: ID!): Game!
 }
 
+type User {
+  id: ID!
+  name: String
+  email: String
+  emailVerified: Date
+  image: String
+  games: [Game!]!
+  createdAt: Date
+  updatedAt: Date
+}
+
 type Mutation {
-  postGame(title: String!, description: String!): Game!
+  postGame(userId: Int, title: String!, description: String!): Game!
   updateGame(id: ID!, title: String, description: String): Game!
   deleteGame(id: ID!): Game!
 }
@@ -14,4 +27,8 @@ type Game {
   id: ID!
   title: String!
   description: String
+  userId: Int
+  user: User
+  createdAt: Date
+  updatedAt: Date
 }
