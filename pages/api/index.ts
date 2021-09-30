@@ -5,15 +5,11 @@ import fs from "fs";
 import path from "path";
 import { v4 as uuidv4 } from "uuid";
 import { PrismaClient } from "@prisma/client";
-
-type Game = {
-  id: string;
-  title: string;
-  description: string;
-};
+import { Game } from "../../types";
 
 const prisma = new PrismaClient();
 
+// TODO: Extract all of these into separate files
 const resolvers = {
   Query: {
     info: () => "This is the API of Water Vapor",
@@ -21,10 +17,24 @@ const resolvers = {
     game: (parent, args, context) =>
       context.prisma.game.findUnique({ where: { id: args.id } }),
   },
+  Game: {
+    user: (parent, args, context) => {
+      // Prevent an error from being thrown if the game isn't associated with a user
+      if (!parent.userId) return;
+      // Else return the user associated with the game
+      const user = context.prisma.game
+        .findUnique({
+          where: { id: parent.id },
+        })
+        .user();
+      return user;
+    },
+  },
   Mutation: {
     postGame: async (parent, args, context, info) => {
       const game: Game = await context.prisma.game.create({
         data: {
+          userId: args.userId,
           title: args.title,
           description: args.description,
         } as Game,
