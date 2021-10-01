@@ -4,6 +4,7 @@ type Query {
   info: String!
   feed: [Game!]!
   getGame(id: ID!): Game!
+  getGamesByUser(userId: ID!): [Game!]!
 }
 
 type User {
@@ -27,7 +28,7 @@ type Game {
   id: ID!
   title: String!
   description: String
-  userId: Int
+  userId: ID
   user: User
   createdAt: Date
   updatedAt: Date
