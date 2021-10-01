@@ -3,7 +3,7 @@ scalar Date
 type Query {
   info: String!
   feed: [Game!]!
-  game(id: ID!): Game!
+  getGame(id: ID!): Game!
 }
 
 type User {
@@ -18,7 +18,7 @@ type User {
 }
 
 type Mutation {
-  postGame(userId: Int, title: String!, description: String!): Game!
+  createGame(userId: ID, title: String!, description: String!): Game!
   updateGame(id: ID!, title: String, description: String): Game!
   deleteGame(id: ID!): Game!
 }
