@@ -1,9 +1,8 @@
 import { PrismaClient } from "@prisma/client";
-import { Game } from "../../../types";
 
 const prisma = new PrismaClient();
 
-const getGames = async (): Promise<Game[]> => {
+const getGames = async () => {
   const allGames = await prisma.game.findMany();
   return allGames;
 };

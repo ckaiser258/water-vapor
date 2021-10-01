@@ -1,58 +1,42 @@
 import { ApolloServer } from "apollo-server-micro";
 import { NextApiHandler } from "next";
+import { PrismaClient } from "@prisma/client";
 import cors from "micro-cors";
 import fs from "fs";
 import path from "path";
-import { v4 as uuidv4 } from "uuid";
-import { PrismaClient } from "@prisma/client";
-import { Game } from "../../types";
+import { User } from "../../types";
+import createGame from "../../db/game/mutations/createGame";
+import updateGame from "../../db/game/mutations/updateGame";
+import deleteGame from "../../db/game/mutations/deleteGame";
+import getGames from "../../db/game/queries/getGames";
+import getGame from "../../db/game/queries/getGame";
+import getGamesByUser from "../../db/game/queries/getGamesByUser";
 
 const prisma = new PrismaClient();
 
-// TODO: Extract all of these into separate files
 const resolvers = {
   Query: {
     info: () => "This is the API of Water Vapor",
-    feed: async (parent, args, context) => context.prisma.game.findMany(),
-    game: (parent, args, context) =>
-      context.prisma.game.findUnique({ where: { id: args.id } }),
+    feed: getGames,
+    getGame,
+    getGamesByUser,
+  },
+  Mutation: {
+    createGame,
+    updateGame,
+    deleteGame,
   },
   Game: {
     user: (parent, args, context) => {
       // Prevent an error from being thrown if the game isn't associated with a user
       if (!parent.userId) return;
       // Else return the user associated with the game
-      const user = context.prisma.game
+      const user: User = context.prisma.game
         .findUnique({
           where: { id: parent.id },
         })
         .user();
       return user;
-    },
-  },
-  Mutation: {
-    postGame: async (parent, args, context, info) => {
-      const game: Game = await context.prisma.game.create({
-        data: {
-          userId: args.userId,
-          title: args.title,
-          description: args.description,
-        } as Game,
-      });
-      return game;
-    },
-    updateGame: async (parent, args, context) => {
-      const updatedGame: Game = await context.prisma.game.update({
-        where: { id: args.id },
-        data: { title: args.title, description: args.description },
-      });
-      return updatedGame;
-    },
-    deleteGame: (parent, args, context) => {
-      const deletedGame: Game = context.prisma.game.delete({
-        where: { id: args.id },
-      });
-      return deletedGame;
     },
   },
 };
