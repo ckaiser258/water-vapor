@@ -18,6 +18,8 @@ export default (req, res) =>
     },
     callbacks: {
       session: async (session, token) => {
+        // Make the user ID available on the session object (for getSession etc.)
+        session.userId = token.sub;
         session.isNewUser = token.isNewUser;
         return session;
       },
@@ -36,6 +38,7 @@ export default (req, res) =>
       }),
       // ...add more providers here
     ],
+    // Might not need this?
     database: process.env.DATABASE_URL,
     pages: {
       signIn: "/login",
