@@ -1,13 +1,15 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { signIn, useSession } from "next-auth/client";
 import { useRouter } from "next/router";
+import { NextPage } from "next";
 
-const LoginPage: React.FC = () => {
-  const [session, loading] = useSession();
+const LoginPage: NextPage = () => {
+  const [session] = useSession();
   const router = useRouter();
 
   useEffect(() => {
-    if (session) {
+    // If the user is already logged in, redirect to home page
+    if (session?.userId) {
       router.push("/");
     }
   }, [session, router]);
