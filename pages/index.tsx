@@ -1,10 +1,12 @@
+import { useState } from "react";
 import type { GetServerSideProps, NextPage } from "next";
 import Head from "next/head";
 import Image from "next/image";
 import styles from "../styles/Home.module.css";
-
 import { gql, useQuery } from "@apollo/client";
 import { Game } from "../types";
+import { useSession } from "next-auth/client";
+import NewUserDialog from "../components/users/NewUserDialog";
 
 const FEED_QUERY = gql`
   {
@@ -24,11 +26,21 @@ const FEED_QUERY = gql`
 `;
 
 const Home: NextPage = () => {
+  const [session] = useSession();
+  // Setting this in state so it can be passed as the 'open' prop to FirstSessionDialog
+  // and can also be used to handle the close event.
+  const [isFirstSession, setIsFirstSession] = useState(
+    session?.isNewUser as boolean
+  );
   const { data, loading, error } = useQuery(FEED_QUERY);
 
   if (error) console.error(error);
 
   const { feed } = data || {};
+
+  const handleFirstSessionDialogClose = () => {
+    setIsFirstSession(false);
+  };
 
   return (
     <div className={styles.container}>
@@ -38,6 +50,12 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       {loading && <p>Loading...</p>}
+      {isFirstSession && (
+        <NewUserDialog
+          open={isFirstSession}
+          handleClose={handleFirstSessionDialogClose}
+        />
+      )}
       <ul>
         {feed?.map((game: Game) => (
           <li key={game.id}>{game.title}</li>

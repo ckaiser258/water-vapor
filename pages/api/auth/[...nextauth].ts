@@ -16,6 +16,19 @@ export default (req, res) =>
     jwt: {
       secret: process.env.JWT_SECRET,
     },
+    callbacks: {
+      session: async (session, token) => {
+        session.isNewUser = token.isNewUser;
+        return session;
+      },
+      jwt: async (token, user, account, profile, isNewUser) => {
+        // Set an isNewUser property on the token to pass it to the session client-side.
+        if (account) {
+          token.isNewUser = isNewUser;
+        }
+        return token;
+      },
+    },
     providers: [
       Providers.GitHub({
         clientId: process.env.GITHUB_ID,
