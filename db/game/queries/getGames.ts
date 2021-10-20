@@ -1,9 +1,8 @@
-import { PrismaClient } from "@prisma/client";
+import { Game } from ".prisma/client";
 
-const prisma = new PrismaClient();
-
-const getGames = async () => {
-  const allGames = await prisma.game.findMany();
+const getGames = async (parent, args, context) => {
+  console.log(context.token);
+  const allGames: Game[] = await context.prisma.game.findMany();
   return allGames;
 };
 
