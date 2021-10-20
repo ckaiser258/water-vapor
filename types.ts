@@ -1,3 +1,6 @@
+import { PrismaClient } from ".prisma/client";
+import { JWT } from "next-auth/jwt";
+
 export interface User {
   id: number;
   name: string;
@@ -16,4 +19,9 @@ export interface Game {
   description: string;
   user?: User;
   userId?: number;
+}
+
+export interface AppContext {
+  prisma: PrismaClient;
+  token: JWT | null;
 }
