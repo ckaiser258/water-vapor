@@ -11,6 +11,7 @@ import deleteGame from "../../db/game/mutations/deleteGame";
 import getGames from "../../db/game/queries/getGames";
 import getGame from "../../db/game/queries/getGame";
 import getGamesByUser from "../../db/game/queries/getGamesByUser";
+import { getToken } from "next-auth/jwt";
 
 const prisma = new PrismaClient();
 
@@ -53,8 +54,14 @@ const server = new ApolloServer({
     "utf8"
   ),
   resolvers,
-  context: {
-    prisma,
+  context: async (session) => {
+    return {
+      prisma,
+      token: await getToken({
+        req: session.req,
+        secret: process.env.JWT_SECRET,
+      }),
+    };
   },
 });
 
