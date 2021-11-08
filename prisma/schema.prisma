@@ -56,6 +56,7 @@ model User {
   createdAt     DateTime  @default(now()) @map(name: "created_at")
   updatedAt     DateTime  @default(now()) @updatedAt @map(name: "updated_at")
   games         Game[]
+  folders       Folder[]
   // Might eventually add these in if needed
   // accounts      Account[]
   // sessions      Session[]
@@ -69,6 +70,17 @@ model Game {
   updatedAt   DateTime @default(now()) @updatedAt
   title       String
   description String
+  folders     Folder[]
   user        User?    @relation(fields: [userId], references: [id])
   userId      String?
+}
+
+model Folder {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+  name      String
+  games     Game[]
+  user      User?    @relation(fields: [userId], references: [id])
+  userId    String?
 }

@@ -15,10 +15,22 @@ export interface User {
 export interface Game {
   id: string;
   createdAt: Date;
+  updatedAt: Date;
   title: string;
   description: string;
+  folders: Folder[];
   user?: User;
   userId?: number;
+}
+
+export interface Folder {
+  id: string;
+  createdAt: Date;
+  updatedAt: Date;
+  name: string;
+  games: Game[];
+  user: User;
+  userId: string;
 }
 
 export interface AppContext {
