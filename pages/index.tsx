@@ -1,12 +1,11 @@
 import { useState } from "react";
-import type { GetServerSideProps, NextPage } from "next";
+import { NextPage } from "next";
 import Head from "next/head";
-import Image from "next/image";
 import styles from "../styles/Home.module.css";
 import { gql, useQuery } from "@apollo/client";
-import { Game } from "../types";
 import { useSession } from "next-auth/client";
 import NewUserDialog from "../components/users/NewUserDialog";
+import { Query } from "../generated/graphql";
 
 const FEED_QUERY = gql`
   {
@@ -32,7 +31,7 @@ const Home: NextPage = () => {
   const [isFirstSession, setIsFirstSession] = useState(
     session?.isNewUser as boolean
   );
-  const { data, loading, error } = useQuery(FEED_QUERY);
+  const { data, loading, error } = useQuery<Query>(FEED_QUERY);
 
   if (error) console.error(error);
 
@@ -57,7 +56,7 @@ const Home: NextPage = () => {
         />
       )}
       <ul>
-        {feed?.map((game: Game) => (
+        {feed?.map((game) => (
           <li key={game.id}>{game.title}</li>
         ))}
       </ul>

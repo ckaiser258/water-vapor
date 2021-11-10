@@ -7,7 +7,7 @@ import { NextPage } from "next";
 import { useSession } from "next-auth/client";
 import { useRouter } from "next/router";
 import User from "../../components/users/User";
-import { Game } from "../../types";
+import { Query } from "../../generated/graphql";
 import GameForm from "../../components/games/GameForm";
 
 const GAMES_BY_USER_QUERY = gql`
@@ -25,7 +25,7 @@ const GAMES_BY_USER_QUERY = gql`
 const ProfilePage: NextPage = () => {
   const router = useRouter();
   const [session, loading] = useSession();
-  const { data, error } = useQuery(GAMES_BY_USER_QUERY, {
+  const { data, error } = useQuery<Query>(GAMES_BY_USER_QUERY, {
     variables: {
       userId: session?.userId,
     },
@@ -49,7 +49,7 @@ const ProfilePage: NextPage = () => {
       {loading && <p>Loading...</p>}
       <User user={session?.user} />
       <ul>
-        {getGamesByUser?.map((game: Game) => (
+        {getGamesByUser?.map((game) => (
           <li key={game.id}>{game.title}</li>
         ))}
       </ul>
