@@ -5,6 +5,8 @@ type Query {
   feed: [Game!]!
   getGame(id: ID!): Game!
   getGamesByUser(userId: ID!): [Game!]!
+  getFolder(id: ID!): Folder!
+  getFolders(userId: ID!): [Folder!]!
 }
 
 type User {
@@ -19,17 +21,47 @@ type User {
 }
 
 type Mutation {
-  createGame(userId: ID, title: String!, description: String!): Game!
-  updateGame(id: ID!, title: String, description: String): Game!
+  createGame(
+    userId: ID
+    title: String!
+    description: String!
+    folders: [FolderInput!]
+  ): Game!
+  updateGame(
+    id: ID!
+    title: String
+    description: String
+    folders: [FolderInput!]
+  ): Game!
   deleteGame(id: ID!): Game!
+  createFolder(userId: ID!, name: String!, games: [GameInput!]): Folder!
 }
 
 type Game {
   id: ID!
   title: String!
   description: String
+  folders: [Folder!]
   userId: ID
   user: User
   createdAt: Date
   updatedAt: Date
+}
+
+type Folder {
+  id: ID!
+  createdAt: Date
+  updatedAt: Date
+  name: String
+  games: [Game]
+  user: User!
+  userId: ID!
+}
+
+input GameInput {
+  id: ID!
+}
+
+input FolderInput {
+  id: ID!
 }

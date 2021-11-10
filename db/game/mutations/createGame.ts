@@ -3,9 +3,10 @@ import { Game } from ".prisma/client";
 const createGame = async (parent, args, context, info) => {
   const game: Game = await context.prisma.game.create({
     data: {
-      userId: context.token?.sub,
+      user: { connect: { id: context.token?.sub } },
       title: args.title,
       description: args.description,
+      folders: { connect: args.folders },
     },
   });
   return game;
