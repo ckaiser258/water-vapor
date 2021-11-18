@@ -25,16 +25,19 @@ type Mutation {
     userId: ID
     title: String!
     description: String!
-    folders: [FolderInput!]
+    # folders is an array of folder ids
+    folders: [String!]
   ): Game!
   updateGame(
     id: ID!
     title: String
     description: String
-    folders: [FolderInput!]
+    # folders is an array of folder ids
+    folders: [String!]
   ): Game!
   deleteGame(id: ID!): Game!
-  createFolder(userId: ID!, name: String!, games: [GameInput!]): Folder!
+  # games is an array of game ids
+  createFolder(userId: ID!, name: String!, games: [String!]): Folder!
 }
 
 type Game {
@@ -58,10 +61,10 @@ type Folder {
   userId: ID!
 }
 
-input GameInput {
-  id: ID!
-}
+# input GameInput {
+#   id: ID!
+# }
 
-input FolderInput {
-  id: ID!
-}
+# input FolderInput {
+#   id: ID!
+# }
