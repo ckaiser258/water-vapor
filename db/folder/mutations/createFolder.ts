@@ -1,6 +1,8 @@
 import { Folder } from ".prisma/client";
+import type { FolderFormInput } from "../../../components/folders/FolderForm";
+import getSelectedIds from "../../../lib/getSelectedIds";
 
-const createFolder = async (parent, args, context, info) => {
+const createFolder = async (parent, args: FolderFormInput, context, info) => {
   const folder: Folder = await context.prisma.folder.create({
     data: {
       // Connect existing user
@@ -10,7 +12,7 @@ const createFolder = async (parent, args, context, info) => {
       name: args.name,
       //   Connect existing games
       games: {
-        connect: args.games,
+        connect: getSelectedIds(args.games),
       },
     },
   });
