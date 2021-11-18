@@ -9,6 +9,7 @@ import { useRouter } from "next/router";
 import User from "../../components/users/User";
 import { Query } from "../../generated/graphql";
 import GameForm from "../../components/games/GameForm";
+import FolderForm from "../../components/folders/FolderForm";
 
 const GAMES_BY_USER_QUERY = gql`
   query gamesByUser($userId: ID!) {
@@ -18,6 +19,10 @@ const GAMES_BY_USER_QUERY = gql`
       description
       createdAt
       updatedAt
+    }
+    getFolders(userId: $userId) {
+      id
+      name
     }
   }
 `;
@@ -40,7 +45,7 @@ const ProfilePage: NextPage = () => {
     }
   }, [session, router, loading]);
 
-  const { getGamesByUser } = data || {};
+  const { getGamesByUser, getFolders } = data || {};
 
   if (error) console.error(error);
 
@@ -53,7 +58,12 @@ const ProfilePage: NextPage = () => {
           <li key={game.id}>{game.title}</li>
         ))}
       </ul>
-      <GameForm />
+      {getGamesByUser && getFolders && (
+        <>
+          <FolderForm games={getGamesByUser} />
+          <GameForm folders={getFolders} />
+        </>
+      )}
     </>
   );
 };
